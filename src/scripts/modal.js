@@ -1,4 +1,11 @@
-function closePopup(popup){
+// Создание функции открытия попапа и добавления слушателя закрытия попапа
+function openModal(popup) {
+  popup.classList.add('popup_is-opened');
+  closeModalListener(popup);
+}
+
+// Создание функции закрытия попапа и очистки его содержимого
+function closeModal(popup){
   popup.classList.remove('popup_is-opened');
 
   // отчищаем картинки и текст в попапе
@@ -17,22 +24,22 @@ function closePopup(popup){
 }
 
 // Создание функции закрытия определённого попапа
-function closePopupListener(popup) {
+function closeModalListener(popup) {
   // Закрытие попапа по клику на крестик
   const popupCloseButton = popup.querySelector('.popup__close');
-  popupCloseButton.addEventListener('click', () => closePopup(popup) );
+  popupCloseButton.addEventListener('click', () => closeModal(popup) );
 
   // Закрытие попапа по клику на оверлей
   popup.addEventListener('click', function (event) {
     if (event.target === popup) {
-      closePopup(popup);
+      closeModal(popup);
     }
   });
 
   // Закрытие попапа по нажатию на клавишу Esc
   function escListener(event) {
     if (event.key === 'Escape') {
-      closePopup(popup)
+      closeModal(popup);
       event.target.removeEventListener('keydown', escListener);
     }
   }
@@ -40,4 +47,4 @@ function closePopupListener(popup) {
 
 }
 
-export { closePopupListener };
+export { closeModalListener, openModal, closeModal };
