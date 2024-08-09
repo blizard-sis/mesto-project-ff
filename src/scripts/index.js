@@ -2,8 +2,9 @@ import '../vendor/normalize.css';
 import '../vendor/fonts.css';
 import '../pages/index.css';
 
-import { renderInitialCards, addCard, deleteCard, likeCard, imageClick } from './cards.js';
-import { openModal } from './modal.js';
+import { renderCard, addCard, deleteCard, likeCard, imageClick } from './card.js';
+import { openModal, closeModal } from './modal.js';
+import { initialCards } from './cards.js';
 
 const placesList = document.querySelector('.places__list');
 
@@ -32,7 +33,7 @@ profileEditButton.addEventListener('click', function () {
     evt.preventDefault();
     profileTitle.textContent = nameInput.value;
     profileDescription.textContent = jobInput.value;
-    popupTypeEdit.classList.remove('popup_is-opened');
+    closeModal(popupTypeEdit);
   }
 
   formElement.addEventListener('submit', handleFormSubmit);
@@ -52,13 +53,22 @@ profileAddButton.addEventListener('click', function () {
     // Обработка формы
     function handleFormSubmit(evt) {
       evt.preventDefault();
-      popupCardAdd.classList.remove('popup_is-opened');
+      closeModal(popupCardAdd);
       const cardElement = addCard(urlInput.value, nameInput.value, deleteCard, likeCard, imageClick);
       placesList.prepend(cardElement);
     }
   
     formElement.addEventListener('submit', handleFormSubmit);
 });
+
+
+// Отрисовка начальных карточек
+function renderInitialCards(placesList) {
+  initialCards.forEach(card => {
+    const cardElement = addCard(card.link, card.name, deleteCard, likeCard, imageClick);
+    renderCard(cardElement, placesList);
+  });
+}
 
 // запуск отрисовки начальных карточек после загрузки DOM документа
 document.addEventListener('DOMContentLoaded', () => {
