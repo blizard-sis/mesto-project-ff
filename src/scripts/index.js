@@ -1,3 +1,9 @@
+import '../vendor/normalize.css';
+import '../vendor/fonts.css';
+import '../pages/index.css';
+
+import { initialCards } from './cards.js';
+
 const placesList = document.querySelector('.places__list');
 
 // @todo: Темплейт карточки
