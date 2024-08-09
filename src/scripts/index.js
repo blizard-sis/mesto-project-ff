@@ -123,4 +123,7 @@ profileAddButton.addEventListener('click', function () {
 // запуск отрисовки начальных карточек после загрузки DOM документа
 document.addEventListener('DOMContentLoaded', () => {
   renderInitialCards(initialCards);
+  document.querySelectorAll('.popup').forEach(popup => {
+    popup.classList.add('popup_is-animated');
+  });
 });
