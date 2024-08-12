@@ -1,50 +1,39 @@
 // Создание функции открытия попапа и добавления слушателя закрытия попапа
 function openModal(popup) {
   popup.classList.add('popup_is-opened');
-  closeModalListener(popup);
+  document.addEventListener('keydown', hendlerEscape);
+  popup.addEventListener('click', hendlerOverlay);
+  popup.addEventListener('click', hendlerCloseButton);
 }
 
 // Создание функции закрытия попапа и очистки его содержимого
 function closeModal(popup){
   popup.classList.remove('popup_is-opened');
+  document.removeEventListener('keydown', hendlerEscape);
+  popup.removeEventListener('click', hendlerOverlay);
+  popup.removeEventListener('click', hendlerCloseButton);
+}
 
-  // отчищаем картинки и текст в попапе
-  const image = popup.querySelector('img');
-  if (image) {
-    image.src = '';
-    image.alt = '';
-    popup.querySelector('.popup__caption').textContent = '';
-  }
-
-  // отчищаем форму
-  const form = popup.querySelector('form');
-  if (form) {
-    form.reset();
+// Создание функции закрытия попапа по нажатию на клавишу Esc
+function hendlerEscape(evt) {
+  if (evt.key === 'Escape') {
+    const openedPopup = document.querySelector('.popup_is-opened');
+    closeModal(openedPopup);
   }
 }
 
-// Создание функции закрытия определённого попапа
-function closeModalListener(popup) {
-  // Закрытие попапа по клику на крестик
-  const popupCloseButton = popup.querySelector('.popup__close');
-  popupCloseButton.addEventListener('click', () => closeModal(popup) );
-
-  // Закрытие попапа по клику на оверлей
-  popup.addEventListener('click', function (event) {
-    if (event.target === popup) {
-      closeModal(popup);
-    }
-  });
-
-  // Закрытие попапа по нажатию на клавишу Esc
-  function escListener(event) {
-    if (event.key === 'Escape') {
-      closeModal(popup);
-      event.target.removeEventListener('keydown', escListener);
-    }
+// Создание функции закрытия попапа по клику на оверлей
+function hendlerOverlay(evt) {
+  if (evt.target === evt.currentTarget) {
+    closeModal(evt.target);
   }
-  document.addEventListener('keydown', escListener);
-
 }
 
-export { closeModalListener, openModal, closeModal };
+// Создание функции закрытия попапа по клику на кнопку закрытия
+function hendlerCloseButton(evt) {
+  if (evt.target.classList.contains('popup__close')) {
+    closeModal(evt.target.closest('.popup'));
+  }
+}
+
+export { openModal, closeModal };
