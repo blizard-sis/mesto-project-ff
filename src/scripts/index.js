@@ -4,6 +4,7 @@ import '../pages/index.css';
 import { addCard } from './card.js';
 import { openModal, closeModal } from './modal.js';
 import { initialCards } from './cards.js';
+import { enableValidation, clearValidation } from './validation.js';
 
 const placesList = document.querySelector('.places__list');
 const popupCardAdd = document.querySelector('.popup_type_new-card');
@@ -21,6 +22,16 @@ const profileAddButton = document.querySelector('.profile__add-button');
 const profileDescription = document.querySelector('.profile__description');
 const profileEditButton = document.querySelector('.profile__edit-button');
 const profileTitle = document.querySelector('.profile__title');
+
+// Конфигурация валидации форм
+const validationConfig = {
+  formSelector: '.popup__form',
+  inputSelector: '.popup__input',
+  submitButtonSelector: '.popup__button',
+  inactiveButtonClass: 'popup__button-disabled',
+  inputErrorClass: 'popup__input_type-error',
+  errorClass: 'popup__error-visible'
+};
 
 // Добавление карточки
 function renderCard(cardElement, placesList) {
@@ -50,9 +61,14 @@ function openImage(imageLink, imageAlt) {
 // Обработка формы
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
+  // меняем значение полей профиля на странице
   profileTitle.textContent = popupProfileEditFormName.value;
   profileDescription.textContent = popupProfileEditFormJob.value;
+  // Закрываем попап
   closeModal(popupProfileEdit);
+  // Убираем валидацию полей формы
+  clearValidation(popupProfileEditForm, validationConfig);
+  // Очищаем поля формы
   popupProfileEditForm.reset();
 }
 
@@ -61,7 +77,11 @@ profileEditButton.addEventListener('click', function () {
   // Заполнение формы текущими значениями
   popupProfileEditFormName.value = profileTitle.textContent;
   popupProfileEditFormJob.value = profileDescription.textContent;
-
+  // Очищаем старую валидацию
+  clearValidation(popupProfileEditForm, validationConfig);
+  // Включаем валидацию формы
+  enableValidation(validationConfig);
+  // Открываем попап
   openModal(popupProfileEdit);
 });
 
@@ -73,14 +93,25 @@ popupProfileEditForm.addEventListener('submit', handleProfileFormSubmit);
 // Обработка формы добавления карточки
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
+  // Добавляем новую карточку
   const cardElement = addCard(popupCardAddFormUrl.value, popupCardAddFormName.value, deleteCard, likeCard, openImage);
+  // Закрываем попап
   closeModal(popupCardAdd);
+  // Убираем валидацию полей формы
+  clearValidation(popupProfileEditForm, validationConfig);
+  // Очищаем поля формы
   popupCardAddForm.reset();
+  // Отрисовываем новую карточку
   placesList.prepend(cardElement);
 }
 
 // добавление новой карточки
 profileAddButton.addEventListener('click', function () {
+  // Очищаем старую валидацию
+  clearValidation(popupProfileEditForm, validationConfig);
+  // Включаем валидацию формы
+  enableValidation(validationConfig);
+  // Открываем попап
   openModal(popupCardAdd);
 });
 
@@ -95,11 +126,12 @@ function renderInitialCards(placesList) {
   });
 }
 
+// Включение валидации форм
+
 // запуск отрисовки начальных карточек после загрузки DOM документа
 document.addEventListener('DOMContentLoaded', () => {
   renderInitialCards(placesList);
   document.querySelectorAll('.popup').forEach(popup => {
-    // добавим класс анимации
     popup.classList.add('popup_is-animated');
   });
 });
