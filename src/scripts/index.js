@@ -3,8 +3,8 @@ import '../vendor/fonts.css';
 import '../pages/index.css';
 import { addCard } from './card.js';
 import { openModal, closeModal } from './modal.js';
-import { initialCards } from './cards.js';
 import { enableValidation, clearValidation } from './validation.js';
+import { getInitialCards, getUserInfo } from './api.js';
 
 const placesList = document.querySelector('.places__list');
 const popupCardAdd = document.querySelector('.popup_type_new-card');
@@ -22,6 +22,7 @@ const profileAddButton = document.querySelector('.profile__add-button');
 const profileDescription = document.querySelector('.profile__description');
 const profileEditButton = document.querySelector('.profile__edit-button');
 const profileTitle = document.querySelector('.profile__title');
+const profileImage = document.querySelector('.profile__image');
 
 // Конфигурация валидации форм
 const validationConfig = {
@@ -98,7 +99,7 @@ function handleCardFormSubmit(evt) {
   // Закрываем попап
   closeModal(popupCardAdd);
   // Убираем валидацию полей формы
-  clearValidation(popupProfileEditForm, validationConfig);
+  clearValidation(popupCardAddForm, validationConfig);
   // Очищаем поля формы
   popupCardAddForm.reset();
   // Отрисовываем новую карточку
@@ -108,7 +109,7 @@ function handleCardFormSubmit(evt) {
 // добавление новой карточки
 profileAddButton.addEventListener('click', function () {
   // Очищаем старую валидацию
-  clearValidation(popupProfileEditForm, validationConfig);
+  clearValidation(popupCardAddForm, validationConfig);
   // Включаем валидацию формы
   enableValidation(validationConfig);
   // Открываем попап
@@ -118,18 +119,37 @@ profileAddButton.addEventListener('click', function () {
 // listener отправки формы карточки
 popupCardAddForm.addEventListener('submit', handleCardFormSubmit);
 
-// Отрисовка начальных карточек
-function renderInitialCards(placesList) {
-  initialCards.forEach(card => {
-    const cardElement = addCard(card.link, card.name, deleteCard, likeCard, openImage);
-    renderCard(cardElement, placesList);
+// ОБЩИЕ ДЕЙСТВИЯ
+
+function renderInitialProfile() {
+  getUserInfo()
+  .then(userInfo => {
+    profileTitle.textContent = userInfo.name;
+    profileDescription.textContent = userInfo.about;
+    profileImage.setAttribute('style', `background-image: url(${userInfo.avatar})`);
+  })
+  .catch(error => {
+    console.error('Ошибка при загрузке профиля:', error);
   });
 }
 
-// Включение валидации форм
+// Отрисовка начальных карточек
+function renderInitialCards(placesList) {
+  getInitialCards()
+  .then(cards => {
+    cards.forEach(card => {
+      const cardElement = addCard(card.link, card.name, deleteCard, likeCard, openImage);
+      renderCard(cardElement, placesList);
+    });
+  })
+  .catch(error => {
+    console.error('Ошибка при загрузке карточек:', error);
+  });
+}
 
 // запуск отрисовки начальных карточек после загрузки DOM документа
 document.addEventListener('DOMContentLoaded', () => {
+  renderInitialProfile();
   renderInitialCards(placesList);
   document.querySelectorAll('.popup').forEach(popup => {
     popup.classList.add('popup_is-animated');
