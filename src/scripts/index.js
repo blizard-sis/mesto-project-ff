@@ -98,21 +98,33 @@ function openImage(imageLink, imageAlt) {
 // Обработка формы
 function handleProfileFormSubmit(evt) {
   evt.preventDefault();
+  // получаем кнопку формы и меняем текст
+  const submitButton = popupProfileEditForm.querySelector('.popup__button');
+  submitButton.textContent = 'Сохранение...';
   // меняем значение полей профиля на сервере и устанавливаем из ответа на странице
   setUserInfo({
     name: popupProfileEditFormName.value,
     about: popupProfileEditFormJob.value
   })
   .then(userInfo => {
+    // подменяем текст на странице из ответа
     profileTitle.textContent = userInfo.name;
     profileDescription.textContent = userInfo.about;
+    // Закрываем попап
+    closeModal(popupProfileEdit);
+    // Очищаем поля формы
+    popupProfileEditForm.reset();
   })
-  // Закрываем попап
-  closeModal(popupProfileEdit);
-  // Убираем валидацию полей формы
-  clearValidation(popupProfileEditForm, validationConfig);
-  // Очищаем поля формы
-  popupProfileEditForm.reset();
+  .catch(err => console.error(`Ошибка при обновлении профиля: ${err}`))
+  .finally(() => {
+    // вертаем кнопку взад
+    submitButton.textContent = 'Сохранить';
+    // Убираем валидацию полей формы
+    clearValidation(popupProfileEditForm, validationConfig);
+  });
+
+
+
 }
 
 // редактирование профиля
@@ -136,17 +148,25 @@ popupProfileEditForm.addEventListener('submit', handleProfileFormSubmit);
 // Обработка формы
 function handleAvatarFormSubmit(evt) {
   evt.preventDefault();
+  // получаем кнопку формы и меняем текст
+  const submitButton = popupAvatarEditForm.querySelector('.popup__button');
+  submitButton.textContent = 'Сохранение...';
   // меняем аватар на сервере и устанавливаем из ответа на странице
   updateAvatar(popupAvatarEditFormAvatar.value)
   .then(userInfo => {
     profileImage.setAttribute('style', `background-image: url(${userInfo.avatar})`);
+    // Закрываем попап
+    closeModal(popupAvatarEdit);
+    // Очищаем поля формы
+    popupAvatarEditForm.reset();
   })
-  // Закрываем попап
-  closeModal(popupAvatarEdit);
-  // Убираем валидацию полей формы
-  clearValidation(popupAvatarEditForm, validationConfig);
-  // Очищаем поля формы
-  popupAvatarEditForm.reset();
+  .catch(err => console.error(`Ошибка при обновлении аватара: ${err}`))
+  .finally(() => {
+    // вертаем кнопку взад
+    submitButton.textContent = 'Сохранить';
+    // Убираем валидацию полей формы
+    clearValidation(popupAvatarEditForm, validationConfig);
+  });
 }
 
 // редактирование аватара
@@ -167,23 +187,28 @@ popupAvatarEditForm.addEventListener('submit', handleAvatarFormSubmit);
 // Обработка формы добавления карточки
 function handleCardFormSubmit(evt) {
   evt.preventDefault();
-  // Добавляем новую карточку на сервер и склаыдваем ответ в переменную
-
-  // Закрываем попап
-  closeModal(popupCardAdd);
+  // получаем кнопку формы и меняем текст
+  const submitButton = popupCardAddForm.querySelector('.popup__button');
+  submitButton.textContent = 'Содание...';
   // Отрисовываем новую карточку
   createCard({
     name: popupCardAddFormName.value,
     link: popupCardAddFormUrl.value
   })
   .then(card => {
+    // Закрываем попап
+    closeModal(popupCardAdd);
     const cardElement = addCard(card, userId, removeCard, likeCard, openImage);
     placesList.prepend(cardElement);
+    // Очищаем поля формы
+    popupCardAddForm.reset();
   })
-  // Убираем валидацию полей формы
-  clearValidation(popupCardAddForm, validationConfig);
-  // Очищаем поля формы
-  popupCardAddForm.reset();
+  .catch(err => console.error(`Ошибка при добавлении карточки: ${err}`))
+  .finally(() => {
+    submitButton.textContent = 'Создать';
+    // Убираем валидацию полей формы
+    clearValidation(popupCardAddForm, validationConfig);
+  });
 }
 
 // добавление новой карточки
