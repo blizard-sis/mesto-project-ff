@@ -1,7 +1,6 @@
 // Создание карточки
-function addCard(card, userId, deleteCallback, cardLikeCallBack, openImageCallback) {
+function addCard(card, userId, cardTemplate, deleteCallback, cardLikeCallBack, openImageCallback) {
 
-  const cardTemplate = document.querySelector('#card-template').content;
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const cardDeleteButton = cardElement.querySelector('.card__delete-button');
   const cardLikeButton = cardElement.querySelector('.card__like-button');

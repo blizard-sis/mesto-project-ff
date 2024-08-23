@@ -15,6 +15,7 @@ import {
   updateAvatar
 } from './api.js';
 
+const cardTemplate = document.querySelector('#card-template').content;
 const placesList = document.querySelector('.places__list');
 const popupCardAdd = document.querySelector('.popup_type_new-card');
 const popupCardAddForm = popupCardAdd.querySelector('.popup__form');
@@ -134,8 +135,7 @@ profileEditButton.addEventListener('click', function () {
   popupProfileEditFormJob.value = profileDescription.textContent;
   // Очищаем старую валидацию
   clearValidation(popupProfileEditForm, validationConfig);
-  // Включаем валидацию формы
-  enableValidation(validationConfig);
+
   // Открываем попап
   openModal(popupProfileEdit);
 });
@@ -173,8 +173,6 @@ function handleAvatarFormSubmit(evt) {
 profileImage.addEventListener('click', function () {
   // Очищаем старую валидацию
   clearValidation(popupAvatarEditForm, validationConfig);
-  // Включаем валидацию формы
-  enableValidation(validationConfig);
   // Открываем попап
   openModal(popupAvatarEdit);
 });
@@ -198,7 +196,7 @@ function handleCardFormSubmit(evt) {
   .then(card => {
     // Закрываем попап
     closeModal(popupCardAdd);
-    const cardElement = addCard(card, userId, removeCard, likeCard, openImage);
+    const cardElement = addCard(card, userId, cardTemplate, removeCard, likeCard, openImage);
     placesList.prepend(cardElement);
     // Очищаем поля формы
     popupCardAddForm.reset();
@@ -215,8 +213,6 @@ function handleCardFormSubmit(evt) {
 profileAddButton.addEventListener('click', function () {
   // Очищаем старую валидацию
   clearValidation(popupCardAddForm, validationConfig);
-  // Включаем валидацию формы
-  enableValidation(validationConfig);
   // Открываем попап
   openModal(popupCardAdd);
 });
@@ -238,7 +234,7 @@ function renderPage() {
     profileImage.setAttribute('style', `background-image: url(${userInfo.avatar})`);
     // отрисовываем карточки
     cards.forEach(card => {
-      const cardElement = addCard(card, userId, removeCard, likeCard, openImage);
+      const cardElement = addCard(card, userId, cardTemplate, removeCard, likeCard, openImage);
       renderCard(cardElement, placesList);
     });
   })
@@ -249,8 +245,12 @@ function renderPage() {
 
 // запуск отрисовки начальных карточек после загрузки DOM документа
 document.addEventListener('DOMContentLoaded', () => {
+  // Отрисовка страницы
   renderPage();
+  // Добавляем анимацию попапам
   document.querySelectorAll('.popup').forEach(popup => {
     popup.classList.add('popup_is-animated');
   });
+  // Включаем валидацию формы
+  enableValidation(validationConfig);
 });
