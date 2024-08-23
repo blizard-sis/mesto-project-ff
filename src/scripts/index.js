@@ -123,22 +123,21 @@ function handleProfileFormSubmit(evt) {
     // Убираем валидацию полей формы
     clearValidation(popupProfileEditForm, validationConfig);
   });
-
-
-
 }
 
-// редактирование профиля
-profileEditButton.addEventListener('click', function () {
+// Открытие формы профиля
+function handleProfileFormOpen() {
   // Заполнение формы текущими значениями
   popupProfileEditFormName.value = profileTitle.textContent;
   popupProfileEditFormJob.value = profileDescription.textContent;
   // Очищаем старую валидацию
   clearValidation(popupProfileEditForm, validationConfig);
-
   // Открываем попап
   openModal(popupProfileEdit);
-});
+}
+
+// редактирование профиля
+profileEditButton.addEventListener('click', handleProfileFormOpen);
 
 // listener отправки формы профиля
 popupProfileEditForm.addEventListener('submit', handleProfileFormSubmit);
@@ -169,13 +168,16 @@ function handleAvatarFormSubmit(evt) {
   });
 }
 
-// редактирование аватара
-profileImage.addEventListener('click', function () {
+// Открытие формы аватара
+function handleAvatarFormOpen() {
   // Очищаем старую валидацию
   clearValidation(popupAvatarEditForm, validationConfig);
   // Открываем попап
   openModal(popupAvatarEdit);
-});
+}
+
+// редактирование аватара
+profileImage.addEventListener('click', handleAvatarFormOpen);
 
 // listener отправки формы аватара
 popupAvatarEditForm.addEventListener('submit', handleAvatarFormSubmit);
@@ -209,13 +211,16 @@ function handleCardFormSubmit(evt) {
   });
 }
 
-// добавление новой карточки
-profileAddButton.addEventListener('click', function () {
+// Открытие формы добавления карточки
+function handleCardFormOpen() {
   // Очищаем старую валидацию
   clearValidation(popupCardAddForm, validationConfig);
   // Открываем попап
   openModal(popupCardAdd);
-});
+}
+
+// добавление новой карточки
+profileAddButton.addEventListener('click', handleCardFormOpen);
 
 // listener отправки формы карточки
 popupCardAddForm.addEventListener('submit', handleCardFormSubmit);
